@@ -5,10 +5,7 @@ An intelligent web-based system that analyzes resumes against job roles and gene
 ---
 
 ## 📽 Project Demo
-
-### 🎥 Video
-
-[Add your demo video link here – YouTube / Google Drive]
+Uploaded above
 
 **Video Demonstrates:**
 - Uploading a PDF resume  
@@ -157,7 +154,7 @@ Java, C, Python, Leadership
 
 
 
-### 👩‍💻 [Your Name]
+### 👩‍💻 Gahana Khandelwal
 - Core JavaScript logic implementation  
 - Skill matching engine  
 - ATS score calculation logic  
@@ -173,16 +170,5 @@ Java, C, Python, Leadership
 - HTML  
 - CSS  
 - JavaScript  
-- PDF.js  
+- PDF
 - GitHub Pages (Hosting & Deployment)  
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** – see the LICENSE file for details.
-
-### Common License Options:
-- MIT License (Permissive, widely used)  
-- Apache 2.0  
-- GPL v3

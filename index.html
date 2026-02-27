@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI Resume ATS Analyzer (PDF)</title>
+
+<!-- PDF.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* ================= LANDING PAGE ================= */
+
+#page1{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    text-align:center;
+    padding:20px;
+    position:relative;
+}
+
+.hero-title{
+    font-size:64px;
+    font-weight:800;
+    margin-bottom:20px;
+    background:linear-gradient(90deg,#00f5ff,#00c6ff,#0072ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero-subtitle{
+    font-size:22px;
+    max-width:750px;
+    margin-bottom:50px;
+    opacity:0.9;
+}
+
+.highlight{
+    color:#00f5ff;
+    font-weight:600;
+}
+
+.hero-features{
+    display:flex;
+    gap:30px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:50px;
+}
+
+.feature{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    padding:25px;
+    border-radius:15px;
+    width:260px;
+    transition:0.3s;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.feature:hover{
+    transform:translateY(-8px);
+    background:rgba(255,255,255,0.15);
+}
+
+.feature h3{
+    margin-top:10px;
+    margin-bottom:10px;
+    color:#00f5ff;
+}
+
+.icon{
+    font-size:32px;
+}
+
+.cta-btn{
+    padding:18px 45px;
+    font-size:20px;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+    box-shadow:0 10px 25px rgba(0,114,255,0.4);
+}
+
+.cta-btn:hover{
+    transform:scale(1.08);
+    box-shadow:0 15px 35px rgba(0,114,255,0.6);
+}
+
+.footer{
+    position:absolute;
+    bottom:20px;
+    font-size:14px;
+    opacity:0.7;
+}
+
+/* ================= PAGE 2 ================= */
+
+#page2{
+    display:none;
+    padding:50px;
+    background:#f5f7fa;
+    color:black;
+    min-height:100vh;
+}
+
+.container{
+    max-width:950px;
+    margin:auto;
+    background:white;
+    padding:40px;
+    border-radius:12px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:25px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+.atsBox{
+    text-align:center;
+    padding:40px;
+    border-radius:20px;
+    margin-top:40px;
+}
+
+.atsScore{
+    font-size:90px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.green{background:#e8f5e9;color:#1b5e20;}
+.orange{background:#fff3e0;color:#ef6c00;}
+.red{background:#ffebee;color:#c62828;}
+
+.section{
+    margin-top:40px;
+    padding:30px;
+    border-radius:12px;
+}
+
+.blue{background:#e3f2fd;}
+.purple{background:#f3e5f5;}
+.teal{background:#e0f2f1;}
+
+ul{line-height:1.8;}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= LANDING PAGE ================= -->
+
+<div id="page1">
+
+    <h1 class="hero-title">AI Resume ATS Analyzer</h1>
+
+    <p class="hero-subtitle">
+        Upload your resume and get an instant 
+        <span class="highlight">real ATS score</span>, 
+        skill gap analysis, and professional improvement suggestions.
+    </p>
+
+    <div class="hero-features">
+
+        <div class="feature">
+            <div class="icon">⚡</div>
+            <h3>Instant PDF Analysis</h3>
+            <p>Smart keyword detection using advanced parsing.</p>
+        </div>
+
+        <div class="feature">
+            <div class="icon">📊</div>
+            <h3>Accurate ATS Score</h3>
+            <p>Know how your resume performs in hiring systems.</p>
+        </div>
+
+        <div class="feature">
+            <div class="icon">🎯</div>
+            <h3>Skill Gap Detection</h3>
+            <p>Identify missing skills for your target job role.</p>
+        </div>
+
+    </div>
+
+    <button class="cta-btn" onclick="goToPage2()">
+        Analyze My Resume →
+    </button>
+
+    <div class="footer">
+        Professional AI Resume Optimization Tool • 2026
+    </div>
+
+</div>
+
+<!-- ================= ANALYZER PAGE ================= -->
+
+<div id="page2">
+<div class="container">
+
+<h1 style="text-align:center;color:#243b55;">Resume PDF Analysis</h1>
+
+<label><b>Enter Job Title</b></label>
+<input type="text" id="jobTitle" placeholder="Example: Java Developer">
+
+<label><b>Upload Resume (.pdf)</b></label>
+<input type="file" id="resumeFile" accept="application/pdf">
+
+<button onclick="analyzeResume()" class="cta-btn" style="width:100%;">Analyze Resume</button>
+
+<div id="result"></div>
+
+</div>
+</div>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+function goToPage2(){
+    document.getElementById("page1").style.display="none";
+    document.getElementById("page2").style.display="block";
+}
+
+async function extractTextFromPDF(file){
+    const reader = new FileReader();
+    return new Promise((resolve,reject)=>{
+        reader.onload = async function(){
+            try{
+                const typedarray = new Uint8Array(this.result);
+                const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                let fullText = "";
+
+                for(let i=1;i<=pdf.numPages;i++){
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    const strings = content.items.map(item => item.str);
+                    fullText += strings.join(" ") + " ";
+                }
+
+                resolve(fullText.toLowerCase());
+            }catch(err){
+                reject(err);
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+async function analyzeResume(){
+
+let job=document.getElementById("jobTitle").value.toLowerCase().trim();
+let fileInput=document.getElementById("resumeFile");
+let result=document.getElementById("result");
+
+if(job===""||fileInput.files.length===0){
+    result.innerHTML="<h3 style='color:red;'>Enter job title and upload PDF resume.</h3>";
+    return;
+}
+
+result.innerHTML="<h3 style='color:#243b55;'>Analyzing Resume... Please wait ⏳</h3>";
+
+let resumeText=await extractTextFromPDF(fileInput.files[0]);
+const roles = {
+
+/* ================= IT / SOFTWARE ================= */
+
+"java developer":["java","spring","hibernate","sql","rest api","git"],
+"python developer":["python","django","flask","sql","git","api"],
+"frontend developer":["html","css","javascript","react","ui","responsive"],
+"backend developer":["node","express","database","api","sql","authentication"],
+"full stack developer":["html","css","javascript","react","node","sql","git"],
+"android developer":["java","kotlin","android studio","xml","firebase"],
+"software engineer":["data structures","algorithms","git","oop","debugging"],
+"devops engineer":["docker","kubernetes","aws","ci/cd","linux","git"],
+"cyber security":["network security","penetration testing","firewall","encryption","risk assessment"],
+"cloud engineer":["aws","azure","cloud","virtualization","linux"],
+
+/* ================= DATA FIELD ================= */
+
+"data scientist":["python","machine learning","pandas","numpy","statistics","sql"],
+"data analyst":["excel","sql","power bi","tableau","data visualization"],
+"machine learning engineer":["python","tensorflow","pytorch","model training","deployment"],
+"business analyst":["requirement gathering","communication","documentation","analysis"],
+
+/* ================= FINANCE ================= */
+
+"accountant":["accounting","excel","tally","tax","finance","gst"],
+"financial analyst":["financial modeling","excel","forecasting","analysis"],
+"banking":["customer service","loan processing","finance","risk assessment"],
+
+/* ================= HEALTHCARE ================= */
+
+"doctor":["diagnosis","patient care","medical knowledge","treatment planning"],
+"nurse":["patient care","communication","medical assistance","emergency care"],
+"pharmacist":["medicine knowledge","inventory","prescription handling"],
+
+/* ================= EDUCATION ================= */
+
+"teacher":["teaching","lesson planning","communication","classroom management"],
+"professor":["research","lecturing","academic writing","mentoring"],
+"trainer":["training","presentation skills","communication","workshop"],
+
+/* ================= ENGINEERING ================= */
+
+"mechanical engineer":["autocad","solidworks","manufacturing","maintenance"],
+"civil engineer":["autocad","construction","site supervision","project planning"],
+"electrical engineer":["circuit design","maintenance","power systems","troubleshooting"],
+"electronics engineer":["embedded systems","pcb design","microcontroller"],
+
+/* ================= HR ================= */
+
+"hr":["recruitment","interviewing","communication","employee engagement","payroll"],
+"recruiter":["sourcing","screening","interview coordination","communication"],
+
+/* ================= SALES & MARKETING ================= */
+
+"sales executive":["sales","negotiation","lead generation","customer handling"],
+"marketing executive":["marketing","social media","seo","campaign management"],
+"digital marketing":["seo","google ads","analytics","content marketing"],
+
+/* ================= DESIGN ================= */
+
+"graphic designer":["photoshop","illustrator","creativity","branding"],
+"ui ux designer":["figma","wireframing","prototyping","user research"],
+"video editor":["premiere pro","editing","storytelling","color grading"],
+
+/* ================= HOSPITALITY ================= */
+
+"waiter":["customer service","communication","hospitality","teamwork"],
+"chef":["cooking","food preparation","kitchen","hygiene","menu planning"],
+"hotel manager":["management","customer service","operations","leadership"],
+
+/* ================= OPERATIONS ================= */
+
+"operations manager":["operations","planning","coordination","process improvement"],
+"supply chain":["logistics","inventory","coordination","procurement"],
+
+/* ================= GOVERNMENT / DEFENSE ================= */
+
+"police":["discipline","law enforcement","physical fitness","investigation"],
+"army":["leadership","discipline","physical fitness","strategy"],
+
+/* ================= GENERAL ================= */
+
+"customer service":["communication","problem solving","client handling"],
+"admin":["documentation","ms office","coordination","communication"]
+
+};
+
+let selectedSkills=null;
+
+for(let role in roles){
+    if(job.includes(role)){
+        selectedSkills=roles[role];
+        break;
+    }
+}
+
+if(!selectedSkills){
+    result.innerHTML="<h3 style='color:red;'>Job role not recognized.</h3>";
+    return;
+}
+
+let matched=[],missing=[];
+selectedSkills.forEach(skill=>{
+    if(resumeText.includes(skill)) matched.push(skill);
+    else missing.push(skill);
+});
+
+let score=Math.round((matched.length/selectedSkills.length)*100);
+let scoreClass="red";
+if(score>=75) scoreClass="green";
+else if(score>=50) scoreClass="orange";
+
+result.innerHTML=`
+<div class="atsBox ${scoreClass}">
+<div style="font-size:28px;font-weight:bold;">ATS SCORE</div>
+<div class="atsScore">${score}%</div>
+</div>
+
+<div class="section blue">
+<h2>Matched Skills</h2>
+<p>${matched.join(", ")||"None detected"}</p>
+</div>
+
+<div class="section red">
+<h2>Missing Skills</h2>
+<p>${missing.join(", ")||"None 🎉"}</p>
+</div>
+
+<div class="section purple">
+<h2>Professional Improvements</h2>
+<ul>
+<li>Add missing keywords naturally in resume.</li>
+<li>Use measurable achievements.</li>
+<li>Keep ATS friendly formatting.</li>
+<li>Align summary with job title.</li>
+<li>Use professional font (Calibri/Arial).</li>
+</ul>
+</div>
+`;
+}
+
+</script>
+
+</body>
+</html>

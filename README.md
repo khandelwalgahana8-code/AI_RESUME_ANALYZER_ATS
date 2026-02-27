@@ -138,7 +138,7 @@ Java, C, Python, Leadership
 - Deployment setup  
 - UI customization  
 - Final presentation preparation
-- 
+
 **Proper documentation of AI usage demonstrates transparency and academic integrity.**
 
 ---
